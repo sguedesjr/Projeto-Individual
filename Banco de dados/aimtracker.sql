@@ -3,26 +3,25 @@ use aimtracker;
 
 CREATE TABLE usuario (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    usuario VARCHAR(45),
-    email VARCHAR(45),
-    senha VARCHAR(45),
-    telefone CHAR(11)
+    usuario VARCHAR(30) NOT NULL,
+    email VARCHAR(45) NOT NULL,
+    senha VARCHAR(45) NOT NULL
 );
 
 CREATE TABLE estatisticas (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    pontuacao CHAR(4),
-    erros CHAR(2),
-    acertos CHAR(2),
-    fkUsuario INT,
-    FOREIGN KEY (fkUsuario) REFERENCES usuario(id)
+    pontuacao INT,
+    erros INT,
+    acertos INT
 );
 
-CREATE TABLE avaliacoes (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    estrelas DECIMAL(2,1),
-    comentario VARCHAR(300),
-    dataAvaliacao DATE,
-    fkUsuarioAv INT,
-    FOREIGN KEY (fkUsuarioAv) REFERENCES usuario(id)
-);
+
+CREATE TABLE leaderboard(
+id INT,
+fkUsuario INT,
+fkEstatisticas INT,
+constraint pkComposta primary key(id, fkUsuario, fkEstatisticas),
+constraint fkUsuario foreign key leaderboard(fkUsuario) references usuario(id),
+constraint fkEstatisticas foreign key leaderboard(fkEstatisticas) references estatisticas(id)
+)auto_increment=1;
+
