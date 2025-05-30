@@ -15,16 +15,21 @@ var HOST_APP = process.env.APP_HOST;
 
 var app = express();
 
-var usuarioRouter = require("C:/Users/sandro/Projeto-Individual/src/routes/usuarios.js");
-
+var usuarioRouter = require("./src/routes/usuarios.js")
+var estatisticasRouter = require("./src/routes/estatisticas.js")
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, "Site Institucional")));
+app.use(express.static(path.join(__dirname,"public", "SiteInstitucional")));
+
+app.use('/jogo', express.static(path.join(__dirname,'public', 'jogo')));
 
 app.use(cors());
 
 app.use("/usuarios", usuarioRouter);
+app.use("/estatisticas", estatisticasRouter);
+
+
 
 
 app.listen(PORTA_APP, function () {

@@ -23,6 +23,13 @@ body{
   margin: auto;
 }
 
+#bemvindo{
+    white-space: nowrap;
+    text-align: center;
+    font-size: 1em;
+    width: 100%;
+}
+
 .header {
   height: var(--tamanho-header);
   border-bottom: 2px solid #e7464e;
@@ -59,12 +66,13 @@ body{
 }
 
 .navbar {
-  width: 300px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   list-style: none;
   color: #ffffff;
+  column-gap: 32px;
+  white-space: nowrap;
 }
 
 .titulo {
@@ -109,7 +117,9 @@ body{
     background:linear-gradient(to left, #f23c3c, #801a1a);
     color: #ffffff; 
     padding: 15px 90px; 
-    border: none; 
+    border: solid;
+    border-color: #4f0909;
+    border-width: 1px;
     border-radius: 12px;
     font-size: 1em;
     font-weight: bold;

@@ -63,12 +63,13 @@ body::before{
 }
 
 .navbar {
-  width: 300px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   list-style: none;
   color: #ffffff;
+  column-gap: 32px;
+  white-space: nowrap;
 }
 
 .titulo {

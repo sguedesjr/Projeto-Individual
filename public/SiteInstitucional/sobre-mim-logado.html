@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIMTRACKER | Sobre mim</title>
+    <link rel="stylesheet" href="sobre-mim.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+    <div class="header">
+        <div class="container">
+        <h1 class="titulo">
+            <img src="imgs/valorant.png" class="logo-navbar">AIMTRACKER
+        </h1>
+        <ul class="navbar">
+            <li>
+            <a href="index.html">Início</a>
+            </li>
+                                <li>
+                        <a href="../jogo/index.html">Treino</a>
+                    </li>
+            <li class="agora">
+            <a href="sobre-mim.html">Sobre mim</a>
+            </li>
+                    <li>|</li>
+                    <p id="bemvindo"> Bem vindo, </p>
+                    <li>|</li>
+                    <li>
+                        <a href="index.html">Sair</a>
+                    </li>
+        </ul>
+    </div>
+        </header>
+            <div class="linha-decorativa"></div>
+
+<section class="sobre-mim">
+  <div class="div2">
+    <img src="imgs/chamber3.jpg" class="imagem1">
+    <p>Comecei a jogar Valorant desde o lançamento e, desde o primeiro contato, me apaixonei completamente pelo jogo. Durante a pandemia, ele ganhou ainda mais importância na minha vida. Por estar no grupo de risco, precisei ficar totalmente recluso, e Valorant se tornou minha maior válvula de escape. Era jogando que eu me conectava com amigos, me distraía e enfrentava os dias difíceis com mais leveza. Jogava todos os dias, e isso criou uma rotina que me acompanhou por muito tempo.
+
+O agente que mais marcou minha trajetória foi o Chamber — sua precisão e estilo me conquistaram. Foi com ele que atingi meu elo mais alto até hoje: Imortal 1.
+
+Hoje, vejo que Valorant é mais do que só um jogo: é parte de quem eu sou, e quero trazer um pouco dessa diversão e superação que sempre senti jogando para outras pessoas também — por isso, desenvolvi este projeto com foco em treino de mira, incentivando a evolução dentro do jogo.</p>
+  </div>
+
+  <div class="div2">
+    <img src="imgs/Imortal.png" class="imagem1">
+    <p>Ao longo do tempo, fui evoluindo como jogador. Meu agente principal sempre foi o Chamber — sua personalidade, precisão e estilo foram o que mais me cativaram dentro do jogo.
+
+Com muita dedicação, passei a estudar movimentação, posicionamento e treino de mira. Me desafiei diariamente, buscando sempre melhorar.
+
+Todo esse esforço me levou ao meu maior marco dentro do jogo até hoje: atingir o elo Imortal 1.
+
+Para mim, essa conquista representou mais do que habilidade mecânica. Foi um reflexo da minha consistência, foco e da paixão que carrego por esse jogo desde o início.
+
+</p>
+  </div>
+
+  <div class="div2">
+    <img src="imgs/imagem1.jpeg" class="imagem1">
+    <p>Mais do que jogar, eu também acompanho de perto o cenário competitivo. Tive a oportunidade de realizar um grande sonho ao assistir presencialmente o VCT e ver a LOUD jogando no mundial.
+
+Foi uma experiência inesquecível, que ficou ainda mais especial quando consegui tirar uma foto com meu streamer favorito: Forsaken.
+
+Estar naquele ambiente, cercado por pessoas que compartilham da mesma paixão, vendo de perto meus ídolos competirem, foi como unir tudo aquilo que me fez amar Valorant em um único dia.</p>
+  </div>
+</section>
+</section>
+
+    <footer>
+        <div class="container-rodape">
+            <div class="coluna-contato">
+                <h3 class="titulo-contato">Sobre nós</h3>
+                <div class="info-contato-tel">
+                    <span class="contato-tel">Telefone</span>
+                    <p class="dados-contato-tel">(12) 3456-7890</p>
+                </div>
+                <div class="info-contato-endereco">
+                    <span class="contato-endereco">Endereço</span>
+                    <p class="dados-contato-endereco">Rua Haddock Lobo, 595 - Cerqueira César, São Paulo - SP 01234-000</p>
+                </div>
+                <div class="icone-github">
+                    <a href="https://github.com/sguedesjr/Projeto-Individual/tree/main" target="_blank" aria-label="GitHub" class="icone-social">
+                            <i class="fab fa-github"></i>
+                        </a>    
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+<script>
+    var nome = sessionStorage.getItem("NOME_USUARIO")
+
+    document.getElementById('bemvindo').innerHTML += nome + `! 👋`;
+</script>

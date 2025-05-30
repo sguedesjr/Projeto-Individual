@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIMTRACKER</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="menu">
+    <button id="iniciarButton">Iniciar Jogo</button>
+    <button onclick="inicio() "id="menuButton">Início</button>
+    <button id="estatisticasButton">Estatísticas</button>
+  </div>
+
+
+  <div id="gameArea" style="display:none;">
+    <div id="pontuacao">Pontuação: 0</div>
+    <div id="erros">Erros: 0</div>
+    <div id="temporizador">Tempo: 0s</div>
+    <div id="porcentagem">Precisão: 0%</div>
+
+    <canvas id="canvas" width="1000" height="650"></canvas>
+  </div>
+
+
+  <div id="estatisticasArea" style="display:none;">
+    <div id="estatisticas"><p>Aqui estão suas estatísticas</p>
+      <div class="kpis">
+      <div class="kpi" id="kpiAcertos">Acertos: 0</div>
+      <div class="kpi" id="kpiErros">Erros: 0</div>
+      <div class="kpi" id="kpiPorcentagem">Precisão: 0%</div>
+    </div>
+      <canvas id="myChart"></canvas>
+    </div>
+    <button id="voltarButton">Voltar</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>  
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

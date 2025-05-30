@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+        --fonte-padrao: 'Barlow', sans-serif;
+  }
+  
+
+  body {
+    font-family: var(--fonte-padrao);
+    background: linear-gradient(to bottom, #111111,#391d1d );
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+  }
+  
+
+  #menu {
+    text-align: center;
+    display: block;
+    justify-content: center;
+    justify-items: center;
+    display: flex;
+  }
+  
+  button {
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 18px;
+    background-color: #ff4545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #972525;
+  }
+  
+
+  #gameArea {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  #pontuacao, #erros, #temporizador, #porcentagem {
+    font-size: 20px;
+    margin: 10px;
+    color: white;
+  }
+  
+
+  #canvas {
+    border: 2px solid #ff4545;
+    background-color: #2b2b2b;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+
+  #estatisticasArea {
+    font-family: var(--fonte-padrao);
+    display: flex;
+    text-align: center;
+    color: white;
+    justify-content: center;
+    justify-items: center;
+    background-color: rgb(41, 41, 41);
+    border-radius: 10px;
+    border: 2px solid #ff4545;
+
+  }
+
+  #estatisticas {
+    font-size: 20px;
+    margin: 50px;
+  }
+  
+
+  #voltarButton {
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #ff4545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  #voltarButton:hover {
+    background-color: #c0392b;
+  }
+
+  .kpis {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 15px;
+  justify-content: center;
+}
+.kpi {
+  background: #f52525;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 1.2em;
+  font-weight: bold;
+  font-family: var(--fonte-padrao);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+}
+
+  

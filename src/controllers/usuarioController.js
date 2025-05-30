@@ -1,4 +1,4 @@
-var usuarioModel = require('C:/Users/sandro/Projeto-Individual/src/models/usuarioModel.js');
+var usuarioModel = require('../models/usuarioModel.js');
 
 function autenticar(req, res) {
     var email = req.body.emailServer;

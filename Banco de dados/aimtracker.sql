@@ -10,7 +10,6 @@ CREATE TABLE usuario (
 
 CREATE TABLE estatisticas (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    pontuacao INT,
     erros INT,
     acertos INT
 );
@@ -18,6 +17,7 @@ CREATE TABLE estatisticas (
 
 CREATE TABLE leaderboard(
 id INT,
+pontuacao INT,
 fkUsuario INT,
 fkEstatisticas INT,
 constraint pkComposta primary key(id, fkUsuario, fkEstatisticas),

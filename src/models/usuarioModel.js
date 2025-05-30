@@ -1,4 +1,4 @@
-var database = require("C:/Users/sandro/Projeto-Individual/src/database/config.js")
+var database = require("../database/config.js")
 
 function autenticar(email, senha) {
     console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function entrar(): ", email, senha)
