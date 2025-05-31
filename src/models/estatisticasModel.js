@@ -16,7 +16,9 @@ where u.nome = '${nome}' and e.erros = ${erros} and e.acertos = ${acertos} and l
 }
 
 function buscarEvol(id, pontuacao) {
-    var instrucaoSql = `select l.id as 'NumeroPart', l.pontuacao as 'Pontuacao' from leaderboard l;`;
+    var instrucaoSql = `select l.id as 'NumeroPart', l.pontuacao as 'Pontuacao' from leaderboard l 
+                        where l.fkUsuario = ${idUsuario}
+                        order by l.id asc;`;
 
 
     console.log("Executando a instrução SQL: \n" + instrucaoSql);

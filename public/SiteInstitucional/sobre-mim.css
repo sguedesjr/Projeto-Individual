@@ -122,9 +122,12 @@ p#bemvindo{
 .div2 img{
     width: 250px;
     height: 250px;
-    object-fit: cover; 
+    object-fit: cover;
     border-radius: 10px;
     flex-shrink: 0;
+    border: solid;
+    padding: 9px;
+    border-color: #852222;
 }
 
 .div2 h1{

@@ -62,7 +62,22 @@ function registrarResultadoPartida(req, res) {
         });
 }
 
+function buscarEvol(req, res) {
+    const idUsuario = req.params.idUsuario;
+    if(!idUsuario){
+        return res.status(400).json({erros: 'ID do usuário não fornecido.'});
+    }
+
+    estatisticasModel.buscarEvol(idUsuario)
+        .then(resultado => res.json(resultado))
+        .catch(erro => {
+            console.error("Erro ao buscar evolução:", erro);
+            res.status(500).json({ error: "Erro ao buscar evolução.", details: erro.sqlMessage || erro.message });
+        });
+}
+
 module.exports = {
     exibir,
-    registrarResultadoPartida
+    registrarResultadoPartida,
+    buscarEvol
 };

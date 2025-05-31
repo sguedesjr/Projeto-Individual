@@ -31,7 +31,7 @@
                     <p id="bemvindo"> Bem vindo, </p>
                     <li>|</li>
                     <li>
-                        <a href="index.html">Sair</a>
+                        <a href="index.html" id="sair">Sair</a>
                     </li>
                 </ul>
             </div>
@@ -110,7 +110,7 @@
     <footer>
         <div class="container-rodape">
             <div class="coluna-contato">
-                <h3 class="titulo-contato">Sobre nós</h3>
+                <h3 class="titulo-contato">Sobre</h3>
                 <div class="info-contato-tel">
                     <span class="contato-tel">Telefone</span>
                     <p class="dados-contato-tel">(12) 3456-7890</p>
@@ -146,4 +146,8 @@
     var nome = sessionStorage.getItem("NOME_USUARIO")
 
     document.getElementById('bemvindo').innerHTML += nome + `! 👋`;
+
+    document.getElementById('sair').addEventListener('click', function() {
+            sessionStorage.clear();
+})
 </script>

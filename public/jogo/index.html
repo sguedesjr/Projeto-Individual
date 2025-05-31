@@ -24,15 +24,25 @@
     <canvas id="canvas" width="1000" height="650"></canvas>
   </div>
 
+<div class="legenda-cores" id="legenda">
+  <strong>Legenda das cores:</strong>
+  <div><span class="cor-verde"></span> Verde: Bom desempenho / Pontuação melhorou</div>
+  <div><span class="cor-preta"></span> Preto: Desempenho normal</div>
+  <div><span class="cor-vermelha"></span> Vermelho: Desempenho ruim / Pontuação piorou</div>
+</div>
 
   <div id="estatisticasArea" style="display:none;">
     <div id="estatisticas"><p>Aqui estão suas estatísticas</p>
       <div class="kpis">
-      <div class="kpi" id="kpiAcertos">Acertos: 0</div>
-      <div class="kpi" id="kpiErros">Erros: 0</div>
-      <div class="kpi" id="kpiPorcentagem">Precisão: 0%</div>
+      <div class="kpi" id="kpiAcertos">Acertos: </div>
+      <div class="kpi" id="kpiErros">Erros: </div>
+      <div class="kpi" id="kpiPorcentagem">Precisão: </div>
+      <div class="kpi" id="kpiPontuacao">Pontuação: </div>
     </div>
-      <canvas id="myChart"></canvas>
+  <div class="graficos">
+    <canvas id="myChart"></canvas>
+    <canvas id="graficoLinha"></canvas>
+  </div>
     </div>
     <button id="voltarButton">Voltar</button>
   </div>

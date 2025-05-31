@@ -1,8 +1,14 @@
+const maxAlvos = 6;
+const alvo = 45;
+const alvoCor = "#FF0000";
+const maxHistorico = 10;
+
 let erros = 0;
 let tempoRestante = 15;
 let acertos = 0;
 let pontuacao = 0;
 let porcentagem = 0;
+
 let ultimosAcertos = 0;
 let ultimosErros = 0;
 let ultimaPorcentagem = 0;
@@ -10,18 +16,16 @@ let ultimaPorcentagem = 0;
 let loopDoJogo;
 let listaDeAlvos = [];
 let listaVezesJogadas = [];
+let historicoPontuacao = [];
 let jogos = 0;
 let jogoEstaAtivo = false;
 let historicoDasPartidas = [];
-const maxHistorico = 10;
 
-const maxAlvos = 6;
-const alvo = 45;
-const alvoCor = "#FF0000";
 
 const botaoIniciar = document.getElementById("iniciarButton");
 const botaoVoltar = document.getElementById("voltarButton");
 const botaoEstatisticas = document.getElementById("estatisticasButton");
+
 const areaDoJogo = document.getElementById("gameArea");
 const areaDeEstatisticas = document.getElementById("estatisticasArea");
 
@@ -33,26 +37,9 @@ const porcentagemNaTela = document.getElementById("porcentagem");
 const telaDeDesenho = document.getElementById("canvas");
 const contexto = telaDeDesenho.getContext("2d");
 
-botaoIniciar.addEventListener("click", iniciarJogo);
-
-botaoVoltar.addEventListener("click", function() {
-  areaDeEstatisticas.style.display = "none";
-  botaoIniciar.style.display = "block";
-  botaoEstatisticas.style.display = "block";
-  areaDoJogo.style.display = "none";
-});
-
-botaoEstatisticas.addEventListener("click", function() {
-  areaDeEstatisticas.style.display = "block";
-  areaDoJogo.style.display = "none";
-  botaoIniciar.style.display = "none";
-  botaoEstatisticas.style.display = "none";
-
-  atualizarKPIs();
-  mostrarGrafico();
-});
-
-telaDeDesenho.addEventListener("click", tratarCliqueNaTela);
+let graficoBarraInstance;
+let graficoLinhaInstance
+let dados = {};
 
 function iniciarJogo() {
   erros = 0;
@@ -94,92 +81,96 @@ function atualizarJogo() {
 }
 
 function finalizarJogo() {
-    jogos++;
-    listaVezesJogadas.push(jogos);
-    jogoEstaAtivo = false;
-    clearInterval(loopDoJogo);
-    listaDeAlvos = [];
+  jogos++;
+  listaVezesJogadas.push(jogos);
 
-    contexto.clearRect(0, 0, telaDeDesenho.width, telaDeDesenho.height);
+  jogoEstaAtivo = false;
+  clearInterval(loopDoJogo);
+  listaDeAlvos = [];
 
-    calcularPorcentagem();
-    alert("Fim de jogo!\nSua pontuação final foi: " + pontuacao + "\nAcertos: " + acertos + "\nErros: " + erros + "\nPorcentagem: " + porcentagem + "%"); 
+  contexto.clearRect(0, 0, telaDeDesenho.width, telaDeDesenho.height);
 
-    ultimosAcertos = acertos;
-    ultimosErros = erros;
-    ultimaPorcentagem = porcentagem;
+  calcularPorcentagem();
 
-    const partidaAtual = {
-        acertos: acertos,
-        pontuacao: pontuacao,
-        erros: erros,
-        precisao: porcentagem
-    };
+  ultimosAcertos = acertos;
+  ultimosErros = erros;
+  ultimaPorcentagem = porcentagem;
 
-    historicoDasPartidas.push(partidaAtual);
+  const partidaAtual = {
+    acertos: acertos,
+    pontuacao: pontuacao,
+    erros: erros,
+    precisao: parseFloat(porcentagem)
+  };
+  historicoDasPartidas.push(partidaAtual);
+  historicoPontuacao.push(pontuacao);
+  if (historicoDasPartidas.length > maxHistorico) {
+    historicoDasPartidas.shift();
+  }
 
-    if (historicoDasPartidas.length > maxHistorico) {
-      
-        historicoDasPartidas.shift();
+  alert(`Fim de jogo!\nSua pontuação final foi: ${pontuacao}\nAcertos: ${acertos}\nErros: ${erros}\nPorcentagem: ${porcentagem}%`);
+
+  const idDoUsuarioLogado = sessionStorage.getItem("ID_USUARIO");
+  if (!idDoUsuarioLogado) {
+    alert("Erro: ID do Usuário não encontrado na sessão. Por favor, faça login novamente.");
+
+    placarNaTela.textContent = "Pontuação: 0";
+    errosNaTela.textContent = "Erros: 0";
+    tempoNaTela.textContent = "Tempo: " + 15 + "s";
+    porcentagemNaTela.textContent = "Porcentagem: " + porcentagem + "%";
+
+    botaoIniciar.style.display = "none";
+    botaoEstatisticas.style.display = "none";
+    areaDoJogo.style.display = "none";
+    areaDeEstatisticas.style.display = "block";
+    legenda.style.display = "block";
+
+    atualizarKPIs();
+    mostrarGrafico();
+    mostrarGraficoEvol()
+    return;
+  }
+
+  fetch('/estatisticas/registrarResultadoPartida', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      idUsuario: parseInt(idDoUsuarioLogado),
+      erros: erros,
+      acertos: acertos,
+      pontuacao: pontuacao
+    })
+  })
+  .then(response => {
+    if (!response.ok) {
+      return response.json().then(errData => {
+        throw new Error(`Falha ao salvar resultado: ${response.status} - ${errData.error || errData.message || 'Erro desconhecido do servidor'}`);
+      });
     }
+    return response.json();
+  })
+  .then(data => {
+    console.log("Resultado registrado com sucesso no backend:", data);
+  })
+  .catch(error => {
+    console.error("Erro ao tentar registrar o resultado da partida:", error);
+    alert("Houve um problema ao tentar salvar seu resultado: " + error.message);
+  })
+  .finally(() => {
+    placarNaTela.textContent = "Pontuação: 0";
+    errosNaTela.textContent = "Erros: 0";
+    tempoNaTela.textContent = "Tempo: " + 15 + "s";
+    porcentagemNaTela.textContent = "Porcentagem: " + porcentagem + "%";
 
-    const idDoUsuarioLogado = sessionStorage.getItem("ID_USUARIO");
-
-    if (!idDoUsuarioLogado) {
-        alert("Erro: ID do Usuário não encontrado na sessão. Por favor, faça login novamente.");
-        reiniciarInterfaceDoJogo(); 
-        return; 
-    }
-    
-    fetch('/estatisticas/registrarResultadoPartida', { 
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            
-            idUsuario: parseInt(idDoUsuarioLogado), 
-            erros: erros,
-            acertos: acertos,   
-            pontuacao: pontuacao   
-        })
-    })
-    .then(response => {
-        
-        if (!response.ok) {
-            
-            return response.json().then(errData => {
-              
-                throw new Error(`Falha ao salvar resultado: ${response.status} - ${errData.error || errData.message || 'Erro desconhecido do servidor'}`);
-            });
-        }
-        return response.json();  
-    })
-    .then(data => {
-        console.log("Resultado registrado com sucesso no backend:", data);
-
-    })
-    .catch(error => {
-        console.error("Erro ao tentar registrar o resultado da partida:", error);
-        alert("Houve um problema ao tentar salvar seu resultado: " + error.message);
-    })
-    .finally(() => {
-
-        reiniciarInterfaceDoJogo();
-    });
-}
-
-
-function reiniciarInterfaceDoJogo() {
-  placarNaTela.textContent = "Pontuação: 0";
-  errosNaTela.textContent = "Erros: 0";
-  tempoNaTela.textContent = "Tempo: " + 15 + "s";
-  porcentagemNaTela.textContent = "Porcentagem: " + porcentagem + "%"
-
-  botaoIniciar.style.display = "none";
-  botaoEstatisticas.style.display = "none";
-  areaDoJogo.style.display = "none";
-  areaDeEstatisticas.style.display = "block";
-  atualizarKPIs();
-  mostrarGrafico();
+    botaoIniciar.style.display = "none";
+    botaoEstatisticas.style.display = "none";
+    areaDoJogo.style.display = "none";
+    areaDeEstatisticas.style.display = "block";
+    legenda.style.display = "block";
+    atualizarKPIs();
+    mostrarGrafico();
+    mostrarGraficoEvol()
+  });
 }
 
 function gerarNovoAlvo() {
@@ -189,7 +180,7 @@ function gerarNovoAlvo() {
 
   let novoAlvo;
   let tentativas = 0;
-  const maximoDeTentativas = 50;
+  const maximoDeTentativas = 10;
 
   do {
     const xAleatorio = Math.random() * (telaDeDesenho.width - 2 * alvo) + alvo;
@@ -198,26 +189,26 @@ function gerarNovoAlvo() {
     novoAlvo = {
       x: xAleatorio,
       y: yAleatorio,
-      raio: alvo,
+      alvo: alvo,
       cor: alvoCor
     };
     tentativas++;
   } while (verificarPosicao(novoAlvo) && tentativas < maximoDeTentativas);
 
-  listaDeAlvos.push(novoAlvo);
+  if (tentativas < maximoDeTentativas) {
+    listaDeAlvos.push(novoAlvo);
+  }
 }
 
 function verificarPosicao(alvoParaChecar) {
   for (let i = 0; i < listaDeAlvos.length; i++) {
     const alvoExistente = listaDeAlvos[i];
 
-    if (alvoParaChecar == alvoExistente) continue;
-
     const diferencaX = alvoParaChecar.x - alvoExistente.x;
     const diferencaY = alvoParaChecar.y - alvoExistente.y;
     const distancia = Math.sqrt(diferencaX * diferencaX + diferencaY * diferencaY);
 
-    if (distancia < alvoParaChecar.raio + alvoExistente.raio + 5) {
+    if (distancia < alvoParaChecar.alvo + alvoExistente.alvo + 5) {
       return true;
     }
   }
@@ -231,10 +222,9 @@ function desenharAlvosNaTela() {
 
   listaDeAlvos.forEach(function(alvo) {
     contexto.beginPath();
-    contexto.arc(alvo.x, alvo.y, alvo.raio, 0, Math.PI * 2);
+    contexto.arc(alvo.x, alvo.y, alvo.alvo, 0, Math.PI * 2);
     contexto.fillStyle = alvo.cor;
     contexto.fill();
-    contexto.closePath();
   });
 }
 
@@ -254,7 +244,7 @@ function tratarCliqueNaTela(evento) {
     const diferencaY = cliqueY - alvoAtual.y;
     const distanciaDoCliqueAoCentro = Math.sqrt(diferencaX * diferencaX + diferencaY * diferencaY);
 
-    if (distanciaDoCliqueAoCentro < alvoAtual.raio) {
+    if (distanciaDoCliqueAoCentro < alvoAtual.alvo) {
       acertos++;
       pontuacao += 10;
       atualizarPlacarNaTela();
@@ -271,7 +261,7 @@ function tratarCliqueNaTela(evento) {
     erros++;
     pontuacao -= 10;
     if (pontuacao < 0) {
-        pontuacao = 0;
+      pontuacao = 0;
     }
 
     atualizarErrosNaTela();
@@ -285,6 +275,8 @@ function calcularPorcentagem() {
   const total = acertos + erros;
   if(total > 0){
     porcentagem = ((acertos / total) * 100).toFixed(2);
+  } else {
+    porcentagem = 0;
   }
 }
 
@@ -304,18 +296,52 @@ function atualizarTempoNaTela() {
 
 function atualizarPorcentagem(){
   calcularPorcentagem();
-porcentagemNaTela.textContent = "Precisão: " + porcentagem + "%";
+  porcentagemNaTela.textContent = "Precisão: " + porcentagem + "%";
 }
 
 function atualizarKPIs() {
-  document.getElementById('kpiAcertos').innerText = `Acertos: ${ultimosAcertos}`;
-  document.getElementById('kpiErros').innerText = `Erros: ${ultimosErros}`;
-  document.getElementById('kpiPorcentagem').innerText = `Precisão: ${ultimaPorcentagem}%`;
+  const kpiAcertosElement = document.getElementById('kpiAcertos');
+  const kpiErrosElement = document.getElementById('kpiErros');
+  const kpiPorcentagemElement = document.getElementById('kpiPorcentagem');
+  const kpiPontuacaoElement = document.getElementById('kpiPontuacao');
+
+
+  if(ultimosAcertos <= 10){
+    kpiAcertosElement.innerHTML = `Acertos: <span style="color: red;">${ultimosAcertos}</span>`;
+  } else if (ultimosAcertos > 10 && ultimosAcertos <= 20){
+    kpiAcertosElement.innerHTML = `Acertos: <span style="color: black;">${ultimosAcertos}</span>`;
+  } else {
+    kpiAcertosElement.innerHTML = `Acertos: <span style="color: green;">${ultimosAcertos}</span>`;
+  }
+
+  if (ultimaPorcentagem <= 50){
+    kpiPorcentagemElement.innerHTML = `Precisão: <span style="color: red;">${ultimaPorcentagem}%</span>`;
+  } else if (ultimaPorcentagem <= 70){
+    kpiPorcentagemElement.innerHTML = `Precisão: <span style="color: black;">${ultimaPorcentagem}%</span>`;
+  } else {
+    kpiPorcentagemElement.innerHTML = `Precisão: <span style="color: green;">${ultimaPorcentagem}%</span>`;
+  }
+
+  if (ultimosErros > 10){
+    kpiErrosElement.innerHTML = `Erros: <span style="color: red;">${ultimosErros}</span>`;
+  } else {
+    kpiErrosElement.innerHTML = `Erros: <span style="color: black;">${ultimosErros}</span>`;
+  }
+
+  for(var i = 0; i < historicoPontuacao.length; i++){
+    pontuacaoAtual = historicoPontuacao[historicoPontuacao.length - 1];
+    pontuacaoAnterior = historicoPontuacao[historicoPontuacao.length - 2];
+    if(pontuacaoAtual < pontuacaoAnterior){
+      kpiPontuacaoElement.innerHTML = `Pontuação: <span style="color: red;">${pontuacao}<span>`;
+    } else {
+      kpiPontuacaoElement.innerHTML = `Pontuação: <span style="color: green;">${pontuacao}<span>`;
+    }
+  } 
 }
 
-  function mostrarGrafico(){
+function mostrarGrafico(){
   const ctx = document.getElementById('myChart').getContext('2d');
-  const dados = {
+  const dadosParaGrafico = {
     labels: ['Acertos', 'Erros'],
     datasets: [{
       label: 'Resultado da Partida',
@@ -332,13 +358,13 @@ function atualizarKPIs() {
     }]
   };
 
-  if (window.myChartInstance) {
-    window.myChartInstance.destroy();
+  if (graficoBarraInstance) {
+    graficoBarraInstance.destroy();
   }
 
-  window.myChartInstance = new Chart(ctx, {
+  graficoBarraInstance = new Chart(ctx, {
     type: 'bar',
-    data: dados,
+    data: dadosParaGrafico,
     options: {
       responsive: true,
       plugins: {
@@ -351,10 +377,103 @@ function atualizarKPIs() {
   });
 }
 
-  function inicio(){
-    var inicio = document.getElementById("menuButton")
-
-    if(inicio){
-      window.location = "/index-logado.html";
+const config = {
+  type: 'line',
+  data: dados,
+  options: {
+    responsive: true,
+    plugins: {
+      title: {
+        display: true,
+        text: 'Chart.js Line Chart - Logarithmic'
+      }
+    },
+    scales: {
+      x: {
+        display: true,
+      },
+      y: {
+        display: true,
+        type: 'logarithmic',
+      }
     }
+  },
+};
+
+function mostrarGraficoEvol(){
+  const ctx2 = document.getElementById('graficoLinha').getContext('2d');
+
+  const labels = historicoPontuacao.map((_, index) => `Partida ${index + 1}`);
+  const dados = historicoPontuacao;
+
+    if (graficoLinhaInstance) {
+    graficoLinhaInstance.destroy();
+  }
+
+  graficoLinhaInstance = new Chart(ctx2, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Pontuação por Partida',
+        data: dados,
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        fill: true,
+        tension: 0.2
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: 'Evolução da Pontuação por Partida'
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+}
+
+
+function inicio(){
+  var inicioBtn = document.getElementById("menuButton");
+
+  if(inicioBtn){
+    window.location.href = "/index-logado.html";
+  }
+}
+
+botaoIniciar.addEventListener("click", iniciarJogo);
+
+botaoVoltar.addEventListener("click", function() {
+  areaDeEstatisticas.style.display = "none";
+  botaoIniciar.style.display = "block";
+  botaoEstatisticas.style.display = "block";
+  areaDoJogo.style.display = "none";
+  legenda.style.display = "none";
+});
+
+botaoEstatisticas.addEventListener("click", function() {
+  areaDeEstatisticas.style.display = "block";
+  areaDoJogo.style.display = "none";
+  botaoIniciar.style.display = "none";
+  botaoEstatisticas.style.display = "none";
+  legenda.style.display = "block";
+
+  atualizarKPIs();
+  mostrarGrafico();
+  mostrarGraficoEvol();
+});
+
+telaDeDesenho.addEventListener("click", tratarCliqueNaTela);
+
+const menuButton = document.getElementById("menuButton");
+if (menuButton) {
+    menuButton.addEventListener("click", inicio);
 }

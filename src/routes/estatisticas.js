@@ -8,7 +8,7 @@ router.post("/exibir", function (req, res) {
     estatisticasController.exibir(req, res);
 });
 
-router.get("/buscarEvol", function (req, res){
+router.get("/buscarEvol/:idUsuario", function (req, res){
 estatisticasController.buscarEvol (req, res);
 });
 
